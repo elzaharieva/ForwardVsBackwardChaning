@@ -1,0 +1,62 @@
+package fmi.kre.hom1.TravelAgency;
+
+rule "Select interest"
+when
+	not Interest()
+then
+	insert(UserInterface.interestedIn());
+end
+
+rule "Select continent"
+when
+	not Continent()
+then
+	insert(UserInterface.whereTo());
+end
+
+rule "Select transportation"
+when
+	c: Continent(name.equals("ASIA") || name.equals("EUROPE"))
+	not Transportation()
+then
+	insert(UserInterface.travelBy());
+end
+
+rule "Select duration"
+when
+	c: Continent(!name.equals("EUROPE"))
+	not Duration()
+then
+	insert(UserInterface.travelFor());
+end
+
+rule "Americas and Africa"
+when
+	i: Interest()
+	c: Continent(name.equals("SOUTH_AMERICA") || name.equals("NORTH_AMERICA") || name.equals("AFRICA"))
+	d: Duration()
+	trips: Trip(continent == c, interest == i, transportation == Transportation.PLANE, duration == d)
+then
+	System.out.println(trips);
+end
+
+rule "Europe"
+when
+	i: Interest()
+	c: Continent(name.equals("EUROPE"))
+	t: Transportation()
+	trips: Trip(continent == c, interest == i, transportation == t, duration == Duration.WEEK)
+then
+	System.out.println(trips);
+end
+
+rule "Asia"
+when
+	i: Interest()
+	c: Continent(name.equals("ASIA"))
+	t: Transportation()
+	d: Duration()
+	trips: Trip(continent == c, interest == i, transportation == t, duration == d)
+then
+	System.out.println(trips);
+end
